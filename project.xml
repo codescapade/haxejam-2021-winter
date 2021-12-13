@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+  <meta title="Winter Haxjam" package="com.spirit.winterhaxejame2021" version="1.0.0" company="Codescapade" />
+  <app main="Main" path="build" file="HaxeJam" />
+  <window width="800" height="600" resizable="false" background="#333333" vsync="true"/>
+  <window fps="60" unless="html5"/>
+  <source path="src" />
+
+  <!-- <define name="telemetry"/> -->
+  <assets path="assets"/>
+  <haxelib name="hxtelemetry" if="telemetry"/>
+  <haxelib name="lime" />
+  <haxelib name="spirit" />
+  <!-- <haxeflag name="-dce" value="full" /> -->
+</project>

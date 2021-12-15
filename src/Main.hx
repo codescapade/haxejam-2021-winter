@@ -6,6 +6,6 @@ import scenes.GameScene;
 class Main extends Game {
 
   public function new() {
-    super(GameScene, 800, 600);
+    super(GameScene, 640, 360);
   }
 }

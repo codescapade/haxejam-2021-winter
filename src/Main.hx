@@ -1,5 +1,6 @@
 package;
 
+import scenes.RayTest;
 import spirit.core.Game;
 import scenes.GameScene;
 

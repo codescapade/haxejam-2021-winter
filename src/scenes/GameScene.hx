@@ -1,5 +1,10 @@
 package scenes;
 
+import spirit.graphics.Graphics;
+import spirit.math.Vector2;
+import spirit.physics.simple.Body;
+import spirit.tween.easing.Easing;
+import spirit.physics.simple.Collide;
 import spirit.graphics.texturepacker.SpriteSheet;
 import spirit.components.Sprite;
 import spirit.components.SimpleTilemapCollider;
@@ -28,11 +33,19 @@ class GameScene extends Scene {
   var moving = false;
 
   var movingRight = false;
+
+  var tempBodies: Array<Body> = [];
+
+  var physics: SimplePhysicsSystem;
+
+  var start = new Vector2();
+  var end = new Vector2();
+
   public override function init() {
-    Game.debugDraw = true;
+    // Game.debugDraw = true;
     addSystem(UpdateSystem).init();
     addSystem(RenderSystem).init();
-    addSystem(SimplePhysicsSystem).init({ worldWidth: 640, worldHeight: 360, gravity: { x: 0, y: 1 } });
+    physics = addSystem(SimplePhysicsSystem).init({ worldWidth: 640, worldHeight: 360, gravity: { x: 0, y: 600 } });
 
     var cam = addEntity(Entity);
     cam.addComponent(Transform).init();
@@ -56,6 +69,7 @@ class GameScene extends Scene {
     tilemap.createFrom2dArray(tiledMap.tileLayers['floor'], tileset);
     var collider = collision.addComponent(SimpleTilemapCollider).init();
     collider.setCollisions([1]);
+    collider.addTag('ground');
 
     var objects = tiledMap.objectLayers['objects'];
     for (object in objects) {
@@ -65,22 +79,24 @@ class GameScene extends Scene {
             y: object.y + object.height * 0.5, zIndex: 2 });
         boxSprite = box.addComponent(Sprite).init({ sheet: sheet, frameName: 'player' });
         body = box.addComponent(SimpleBody).init({ width: 20, height: 20, type: DYNAMIC });
+      } else if (object.name == 'platform') {
+        var platform = addEntity(Entity);
+        platform.addComponent(Transform).init({ x: object.x + object.width * 0.5, y: object.y + object.height * 0.5,
+            zIndex: 1});
+        platform.addComponent(Sprite).init({ sheet: sheet, frameName: 'platform' });
+        platform.addComponent(SimpleBody).init({ width: object.width, height: object.height,
+            canCollide: Collide.LEFT | Collide.RIGHT | Collide.TOP, tags: ['ground'] });
       }
     }
-    // var floor = addEntity(Entity);
-    // floor.addComponent(Transform).init({ x: 400, y: 300 });
-    // floor.addComponent(BoxShape).init({ width: 200, height: 20, filled: true, hasStroke: false,
-    //     fillColor: Color.fromValues(100, 100, 150, 255 )});
-    // floor.addComponent(SimpleBody).init({ width: 200, height: 20, type: STATIC });
-    
-
-    // var box = addEntity(Entity);
-    // boxTransform = box.addComponent(Transform).init({ x: 400, y: 280 });
-    // boxShape = box.addComponent(BoxShape).init({ width: 20, height: 20, filled: true, hasStroke: false,
-    //     fillColor: Color.fromValues(100, 170, 180, 255 )});
-    // box.addComponent(SimpleBody).init({ width: 20, height: 20, type: DYNAMIC });
 
     events.on(KeyboardEvent.KEY_DOWN, keyDown);
+  }
+
+  public override function render(graphics:Graphics) {
+    super.render(graphics);
+
+    graphics.color = Color.WHITE;
+    graphics.drawLine(start.x, start.y, end.x, end.y);
   }
 
   function keyDown(event: KeyboardEvent) {
@@ -88,26 +104,83 @@ class GameScene extends Scene {
       if (moving) {
         return;
       }
+      var worldPos = boxTransform.getWorldPosition();
+      start.set(worldPos.x, worldPos.y);
+      end.set(worldPos.x + 15, worldPos.y);
+      while (tempBodies.length > 0) {
+        tempBodies.pop();
+      }
+      physics.raycast(start, end, 'ground', tempBodies);
+
+      worldPos.put();
+      if (tempBodies.length > 0) {
+        return;
+      }
+
+      var angle = Math.round(boxTransform.angle);
+      if (angle == 0) {
+        boxSprite.anchorX = 1;
+        boxSprite.anchorY = 1;
+      } else if (angle == 90) {
+        boxSprite.anchorX = 1;
+        boxSprite.anchorY = 0;
+      }
+      else if (angle == 180) {
+        boxSprite.anchorX = 0;
+        boxSprite.anchorY = 0;
+
+      } else if (angle == 270) {
+        boxSprite.anchorX = 0;
+        boxSprite.anchorY = 1;
+
+      }
       moving = true;
       body.active = false;
       movingRight = true;
-      boxSprite.anchorX = 1;
-      boxSprite.anchorY = 1;
       boxTransform.x += boxSprite.width * 0.5;
       boxTransform.y += boxSprite.height * 0.5;
-      tweens.create(boxTransform, 0.5, { angle: boxTransform.angle + 90 }).setOnComplete(tweenComplete);
+      tweens.create(boxTransform, 0.3, { angle: boxTransform.angle + 90 }).setOnComplete(tweenComplete);
     } else if (event.keyCode == LEFT) {
       if (moving) {
         return;
       }
+
+      var angle = Math.round(boxTransform.angle);
+      if (angle == 0) {
+        boxSprite.anchorX = 0;
+        boxSprite.anchorY = 1;
+      } else if (angle == 90) {
+        boxSprite.anchorX = 1;
+        boxSprite.anchorY = 1;
+      }
+      else if (angle == 180) {
+        boxSprite.anchorX = 1;
+        boxSprite.anchorY = 0;
+
+      } else if (angle == 270) {
+        boxSprite.anchorX = 0;
+        boxSprite.anchorY = 0;
+      }
       moving = true;
       movingRight = false;
       body.active = false;
-      boxSprite.anchorX = 0;
-      boxSprite.anchorY = 1;
       boxTransform.x -= boxSprite.width * 0.5;
       boxTransform.y += boxSprite.height * 0.5;
-      tweens.create(boxTransform, 0.5, { angle: boxTransform.angle - 90 }).setOnComplete(tweenComplete);
+      tweens.create(boxTransform, 0.3, { angle: boxTransform.angle - 90 }).setOnComplete(tweenComplete);
+    } else if (event.keyCode == UP) {
+      if (boxTransform.angle == 0) {
+        if (body.active) {
+          body.velocity.y = -280;
+        }
+      } else if (boxTransform.angle == 90) {
+        moving = true;
+        body.active = false;
+        tweens.create(boxTransform, 0.25, { x: boxTransform.x + 20 }).setEase(Easing.easeOutCubic).setOnComplete(pushComplete);
+      } else if (boxTransform.angle == 270) {
+        moving = true;
+        body.active = false;
+        tweens.create(boxTransform, 0.25, { x: boxTransform.x - 20 }).setEase(Easing.easeOutCubic).setOnComplete(pushComplete);
+      }
     }
   }
 
@@ -118,10 +191,19 @@ class GameScene extends Scene {
       boxTransform.x -= boxSprite.width * 0.5;
     }
 
+    if (boxTransform.angle >= 360) {
+      boxTransform.angle -= 360;
+    } else if (boxTransform.angle < 0) {
+      boxTransform.angle += 360;
+    }
     boxTransform.y -= boxSprite.width * 0.5;
     boxSprite.anchorX = 0.5;
     boxSprite.anchorY = 0.5;
-    boxTransform.angle = 0;
+    body.active = true;
+    moving = false;
+  }
+
+  function pushComplete() {
     body.active = true;
     moving = false;
   }

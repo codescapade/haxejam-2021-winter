@@ -2,7 +2,7 @@
 <project>
   <meta title="Winter Haxjam" package="com.spirit.winterhaxejame2021" version="1.0.0" company="Codescapade" />
   <app main="Main" path="build" file="HaxeJam" />
-  <window width="640" height="360" resizable="false" background="#333333" vsync="true"/>
+  <window width="800" height="450" resizable="false" background="#333333" vsync="true"/>
   <window fps="60" unless="html5"/>
   <source path="src" />
 

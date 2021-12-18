@@ -26,7 +26,7 @@
             </struct>
         </array>
         <key>allowRotation</key>
-        <false/>
+        <true/>
         <key>shapeDebug</key>
         <false/>
         <key>dpi</key>
@@ -34,7 +34,7 @@
         <key>dataFormat</key>
         <string>spritesheet-only</string>
         <key>textureFileName</key>
-        <filename>../../assets/tilemaps/tiles.png</filename>
+        <filename>../../assets/tilemaps/object_tiles.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrQualityLevel</key>
@@ -179,9 +179,16 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">../sprites/tiles/tile_00.png</key>
-            <key type="filename">../sprites/tiles/tile_01.png</key>
-            <key type="filename">../sprites/tiles/tile_03.png</key>
+            <key type="filename">../sprites/obj_tiles/obj_tile_00.png</key>
+            <key type="filename">../sprites/obj_tiles/obj_tile_01.png</key>
+            <key type="filename">../sprites/obj_tiles/obj_tile_02.png</key>
+            <key type="filename">../sprites/obj_tiles/obj_tile_03.png</key>
+            <key type="filename">../sprites/obj_tiles/obj_tile_04.png</key>
+            <key type="filename">../sprites/obj_tiles/obj_tile_05.png</key>
+            <key type="filename">../sprites/obj_tiles/obj_tile_06.png</key>
+            <key type="filename">../sprites/obj_tiles/obj_tile_07.png</key>
+            <key type="filename">../sprites/obj_tiles/obj_tile_08.png</key>
+            <key type="filename">../sprites/obj_tiles/obj_tile_09.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -199,9 +206,16 @@
         </map>
         <key>fileList</key>
         <array>
-            <filename>../sprites/tiles/tile_00.png</filename>
-            <filename>../sprites/tiles/tile_01.png</filename>
-            <filename>../sprites/tiles/tile_03.png</filename>
+            <filename>../sprites/obj_tiles/obj_tile_00.png</filename>
+            <filename>../sprites/obj_tiles/obj_tile_01.png</filename>
+            <filename>../sprites/obj_tiles/obj_tile_02.png</filename>
+            <filename>../sprites/obj_tiles/obj_tile_03.png</filename>
+            <filename>../sprites/obj_tiles/obj_tile_04.png</filename>
+            <filename>../sprites/obj_tiles/obj_tile_05.png</filename>
+            <filename>../sprites/obj_tiles/obj_tile_06.png</filename>
+            <filename>../sprites/obj_tiles/obj_tile_07.png</filename>
+            <filename>../sprites/obj_tiles/obj_tile_08.png</filename>
+            <filename>../sprites/obj_tiles/obj_tile_09.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

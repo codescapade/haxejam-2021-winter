@@ -1,5 +1,10 @@
 package scenes;
 
+import entities.Spike;
+import entities.Platform;
+import entities.Goal;
+import entities.Player;
+import entities.Hook;
 import components.PlayerMovement;
 import spirit.graphics.Graphics;
 import spirit.math.Vector2;
@@ -24,6 +29,20 @@ import spirit.systems.SimplePhysicsSystem;
 import spirit.systems.RenderSystem;
 import spirit.systems.UpdateSystem;
 import spirit.core.Scene;
+
+@:enum
+abstract TileObject(Int) from Int to Int {
+  var PLAYER = 0;
+  var GOAL = 1;
+  var PLATFORM = 2;
+  var SPIKES = 3;
+  var RED_WALL = 4;
+  var RED_BUTTON = 5;
+  var GREEN_WALL = 6;
+  var GREEN_BUTTON = 7;
+  var BLUE_WALL = 8;
+  var BLUE_BUTTON = 9;
+}
 
 class GameScene extends Scene {
 
@@ -63,34 +82,42 @@ class GameScene extends Scene {
     collider.setCollisions([1]);
     collider.addTag('ground');
 
-    var objects = tiledMap.objectLayers['objects'];
-    for (object in objects) {
-      if (object.name == 'player') {
-        var player = addEntity(Entity);
-        var boxTransform = player.addComponent(Transform).init({ x: object.x + object.width * 0.5,
-            y: object.y + object.height * 0.5, zIndex: 2 });
-        player.addComponent(Sprite).init({ sheet: sheet, frameName: 'player' });
-        player.addComponent(SimpleBody).init({ width: 20, height: 20, type: DYNAMIC, tags: ['player'] });
+    var hooks = addEntity(Entity);
+    hooks.addComponent(Transform).init({ zIndex: 1 });
+    tilemap = hooks.addComponent(Tilemap).init();
+    tilemap.createFrom2dArray(tiledMap.tileLayers['hookpoints'], tileset);
+    collider = hooks.addComponent(SimpleTilemapCollider).init();
+    collider.setCollisions([2]);
+    collider.addTag('hook');
 
-        var hook = addEntity(Entity);
-        var hookTransform = hook.addComponent(Transform).init({ zIndex: 0, parent: boxTransform, scaleY: 1 });
-        hook.addComponent(BoxShape).init({ anchorY: 1, width: 4, height: 1, filled: true,
-            fillColor: Color.fromValues(120, 80, 40, 255), hasStroke: false });
+    var tileSize = tileset.tileWidth;
+    var objectGrid = tiledMap.tileLayers['objects'];
+    var firstGid = tiledMap.tilesetFirstGid['object_tiles'];
+    for (y in 0...objectGrid.length - 1) {
+      for (x in 0...objectGrid[0].length - 1) {
+        if (objectGrid[y][x] < 0) {
+          continue;
+        }
+        var index: TileObject = objectGrid[y][x] - firstGid + 1;
 
-        player.addComponent(PlayerMovement).init({ physics: physics, hook: hookTransform });
-      } else if (object.name == 'platform') {
-        var platform = addEntity(Entity);
-        platform.addComponent(Transform).init({ x: object.x + object.width * 0.5, y: object.y + object.height * 0.5,
-            zIndex: 1});
-        platform.addComponent(Sprite).init({ sheet: sheet, frameName: 'platform' });
-        platform.addComponent(SimpleBody).init({ width: object.width, height: object.height,
-            canCollide: Collide.TOP, tags: ['ground'], type: STATIC });
-      } else if (object.name == 'goal') {
-        var goal = addEntity(Entity);
-        goal.addComponent(Transform).init({ x: object.x + object.width * 0.5, y: object.y + object.height * 0.5,
-            zIndex: 1});
-        goal.addComponent(Sprite).init({ sheet: sheet, frameName: 'goal' });
-        goal.addComponent(SimpleBody).init({ width: 10, height: 10, type: STATIC, isTrigger: true, tags: ['goal'] });
+        var xPos = x * tileSize + tileSize * 0.5;
+        var yPos = y * tileSize + tileSize * 0.5;
+        switch(index) {
+          case PLAYER:
+            var hook = addEntity(Hook).init();
+            addEntity(Player).init({ x: xPos, y: yPos, sheet: sheet, physics: physics, hookTransform: hook.transform });
+
+          case GOAL:
+            addEntity(Goal).init({ x: xPos, y: yPos, sheet: sheet });
+
+          case PLATFORM:
+            addEntity(Platform).init({ x: xPos, y: yPos, sheet: sheet });
+
+          case SPIKES:
+            addEntity(Spike).init({ x: xPos, y: yPos, sheet: sheet });
+
+          default:
+        }
       }
     }
   }

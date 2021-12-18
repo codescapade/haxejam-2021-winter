@@ -32,7 +32,9 @@ class PlayerMovement extends Component implements Updatable {
 
   var hits: Array<Hit> = [];
 
-  var groundTag = 'ground';
+  var groundTag = ['ground', 'hook'];
+
+  var hookTag = ['hook'];
 
   var grounded = false;
 
@@ -66,7 +68,6 @@ class PlayerMovement extends Component implements Updatable {
 
     physics.addInteractionListener(TRIGGER_START, 'goal', 'player', hitGoal);
   }
-
 
   public function update(dt: Float) {
     updateGrounded();
@@ -153,7 +154,7 @@ class PlayerMovement extends Component implements Updatable {
           collide = RIGHT;
         }
         clearHits();
-        physics.raycast(rayStart, rayEnd, groundTag, hits);
+        physics.raycast(rayStart, rayEnd, hookTag, hits);
         if (hits.length > 0) {
           for (hit in hits) {
             if (!hit.body.canCollide.contains(collide)) {

@@ -1,27 +1,83 @@
 {"frames": [
 
 {
-	"filename": "goal",
-	"frame": {"x":1,"y":1,"w":24,"h":22},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":24,"h":22},
-	"sourceSize": {"w":24,"h":22}
-},
-{
-	"filename": "platform",
-	"frame": {"x":27,"y":23,"w":20,"h":4},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":4},
-	"sourceSize": {"w":20,"h":4}
-},
-{
-	"filename": "player",
-	"frame": {"x":27,"y":1,"w":20,"h":20},
+	"filename": "obj_tile_00",
+	"frame": {"x":1,"y":1,"w":20,"h":20},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":20},
+	"sourceSize": {"w":20,"h":20}
+},
+{
+	"filename": "obj_tile_01",
+	"frame": {"x":1,"y":23,"w":20,"h":20},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":20},
+	"sourceSize": {"w":20,"h":20}
+},
+{
+	"filename": "obj_tile_02",
+	"frame": {"x":1,"y":56,"w":20,"h":5},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":5},
+	"sourceSize": {"w":20,"h":20}
+},
+{
+	"filename": "obj_tile_03",
+	"frame": {"x":1,"y":45,"w":20,"h":9},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":11,"w":20,"h":9},
+	"sourceSize": {"w":20,"h":20}
+},
+{
+	"filename": "obj_tile_04",
+	"frame": {"x":23,"y":1,"w":6,"h":20},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":7,"y":0,"w":6,"h":20},
+	"sourceSize": {"w":20,"h":20}
+},
+{
+	"filename": "obj_tile_05",
+	"frame": {"x":1,"y":63,"w":20,"h":5},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":15,"w":20,"h":5},
+	"sourceSize": {"w":20,"h":20}
+},
+{
+	"filename": "obj_tile_06",
+	"frame": {"x":23,"y":23,"w":6,"h":20},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":7,"y":0,"w":6,"h":20},
+	"sourceSize": {"w":20,"h":20}
+},
+{
+	"filename": "obj_tile_07",
+	"frame": {"x":1,"y":70,"w":20,"h":5},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":15,"w":20,"h":5},
+	"sourceSize": {"w":20,"h":20}
+},
+{
+	"filename": "obj_tile_08",
+	"frame": {"x":23,"y":45,"w":6,"h":20},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":7,"y":0,"w":6,"h":20},
+	"sourceSize": {"w":20,"h":20}
+},
+{
+	"filename": "obj_tile_09",
+	"frame": {"x":1,"y":77,"w":20,"h":5},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":15,"w":20,"h":5},
 	"sourceSize": {"w":20,"h":20}
 }],
 "meta": {
@@ -29,8 +85,8 @@
 	"version": "1.0",
 	"image": "sprites.png",
 	"format": "RGBA8888",
-	"size": {"w":48,"h":28},
+	"size": {"w":30,"h":83},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:1e1223819478575a93a5a537f100049e:7463ed3ecbe6c7c80b4bd537681bf5b2:1eabdf11f75e3a4fe3147baf7b5be24b$"
+	"smartupdate": "$TexturePacker:SmartUpdate:3d949833ed1aab6bb6a0485373caa373:6e4986dcdfd5863a6d9628b2eaadafac:1eabdf11f75e3a4fe3147baf7b5be24b$"
 }
 }

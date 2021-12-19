@@ -92,9 +92,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>2048</int>
+            <int>512</int>
             <key>height</key>
-            <int>2048</int>
+            <int>128</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -182,6 +182,21 @@
             <key type="filename">../sprites/tiles/tile_00.png</key>
             <key type="filename">../sprites/tiles/tile_01.png</key>
             <key type="filename">../sprites/tiles/tile_03.png</key>
+            <key type="filename">../sprites/tiles/tile_04.png</key>
+            <key type="filename">../sprites/tiles/tile_05.png</key>
+            <key type="filename">../sprites/tiles/tile_06.png</key>
+            <key type="filename">../sprites/tiles/tile_07.png</key>
+            <key type="filename">../sprites/tiles/tile_08.png</key>
+            <key type="filename">../sprites/tiles/tile_09.png</key>
+            <key type="filename">../sprites/tiles/tile_10.png</key>
+            <key type="filename">../sprites/tiles/tile_11.png</key>
+            <key type="filename">../sprites/tiles/tile_12.png</key>
+            <key type="filename">../sprites/tiles/tile_13.png</key>
+            <key type="filename">../sprites/tiles/tile_14.png</key>
+            <key type="filename">../sprites/tiles/tile_15.png</key>
+            <key type="filename">../sprites/tiles/tile_16.png</key>
+            <key type="filename">../sprites/tiles/tile_17.png</key>
+            <key type="filename">../sprites/tiles/tile_19.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -196,12 +211,43 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">../sprites/tiles/tile_18.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>5,5,9,10</rect>
+                <key>scale9Paddings</key>
+                <rect>5,5,9,10</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
         </map>
         <key>fileList</key>
         <array>
             <filename>../sprites/tiles/tile_00.png</filename>
             <filename>../sprites/tiles/tile_01.png</filename>
             <filename>../sprites/tiles/tile_03.png</filename>
+            <filename>../sprites/tiles/tile_04.png</filename>
+            <filename>../sprites/tiles/tile_05.png</filename>
+            <filename>../sprites/tiles/tile_06.png</filename>
+            <filename>../sprites/tiles/tile_07.png</filename>
+            <filename>../sprites/tiles/tile_08.png</filename>
+            <filename>../sprites/tiles/tile_09.png</filename>
+            <filename>../sprites/tiles/tile_10.png</filename>
+            <filename>../sprites/tiles/tile_11.png</filename>
+            <filename>../sprites/tiles/tile_12.png</filename>
+            <filename>../sprites/tiles/tile_13.png</filename>
+            <filename>../sprites/tiles/tile_14.png</filename>
+            <filename>../sprites/tiles/tile_15.png</filename>
+            <filename>../sprites/tiles/tile_16.png</filename>
+            <filename>../sprites/tiles/tile_17.png</filename>
+            <filename>../sprites/tiles/tile_18.png</filename>
+            <filename>../sprites/tiles/tile_19.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

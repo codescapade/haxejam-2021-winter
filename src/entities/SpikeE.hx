@@ -6,11 +6,12 @@ import spirit.components.Transform;
 import spirit.graphics.texturepacker.SpriteSheet;
 import spirit.core.Entity;
 
-class Spike extends Entity {
+class SpikeE extends Entity {
 
-  public function init(options: SpikeOptions): Spike {
+  public function init(options: SpikeEOptions): SpikeE {
+    var sheet = assets.getSpriteSheet('sprites');
     addComponent(Transform).init({ x: options.x, y: options.y, zIndex: 1});
-    addComponent(Sprite).init({ sheet: options.sheet, frameName: 'obj_tile_03' });
+    addComponent(Sprite).init({ sheet: sheet, frameName: 'obj_tile_03' });
     addComponent(SimpleBody).init({ width: 20, height: 6, offset: { x: 0, y: 7 }, type: STATIC,
         isTrigger: true, tags: ['dead'] });
 
@@ -18,8 +19,7 @@ class Spike extends Entity {
   }
 }
 
-typedef SpikeOptions = {
+typedef SpikeEOptions = {
   var x: Float;
   var y: Float;
-  var sheet: SpriteSheet;
 }

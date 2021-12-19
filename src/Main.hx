@@ -1,11 +1,11 @@
 package;
 
+import scenes.Preload.PreLoad;
 import spirit.core.Game;
-import scenes.GameScene;
 
 class Main extends Game {
 
   public function new() {
-    super(GameScene, 640, 360, true);
+    super(PreLoad, 400, 300, true);
   }
 }

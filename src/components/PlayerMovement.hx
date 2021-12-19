@@ -32,9 +32,11 @@ class PlayerMovement extends Component implements Updatable {
 
   var hits: Array<Hit> = [];
 
-  var groundTag = ['ground', 'hook'];
+  var groundTag = ['ground', 'hook',];
 
-  var hookTag = ['hook'];
+  var hookTag = 'hook';
+
+  var hooktHitTags = ['ground', 'hook', 'door'];
 
   var grounded = false;
 
@@ -50,6 +52,10 @@ class PlayerMovement extends Component implements Updatable {
 
   var hookStartPos = new Vector2();
   var hookHitPos = new Vector2();
+
+  var beforeHookAngle = 0.0;
+
+  var hookLength = 120;
   
   public override function cleanup() {
     events.off(KeyboardEvent.KEY_DOWN, keyDown);   
@@ -114,12 +120,12 @@ class PlayerMovement extends Component implements Updatable {
       return;
     }
 
-    final angle = transform.angle;
-    if (event.keyCode == X && !moving) {
+    var angle = transform.angle;
+    if (event.keyCode == UP && !moving) {
       if (grounded) {
         if (angle == 0 && body.active) {
           if (body.active) {
-            body.velocity.y = -290;
+            body.velocity.y = -260;
             jumping = true;
           }
         } else if (angle == 90 && canMoveRight()) {
@@ -136,70 +142,97 @@ class PlayerMovement extends Component implements Updatable {
             .setOnComplete(pushComplete);
         }
       }
-    } else if (event.keyCode == C && !moving) {
+    } else if (event.keyCode == SPACE && !moving) {
       if (!onHook) {
+        beforeHookAngle = angle;
         rayStart.set(transform.x, transform.y);
         var collide: Collide = NONE;
+
         if (angle == 0) {
-          rayEnd.set(transform.x, transform.y - 120);
-          collide = BOTTOM;
-        } else if (angle == 90) {
-          rayEnd.set(transform.x + 120, transform.y);
+          if (grounded || (!leftDown && !rightDown)) {
+            rayEnd.set(transform.x, transform.y - hookLength);
+            collide = BOTTOM;
+          } else if (leftDown) {
+            angle = 270;
+            transform.angle = angle;
+          } else if (rightDown) {
+            angle = 90;
+            transform.angle = angle;
+          }
+        }
+        if (angle == 90) {
+          rayEnd.set(transform.x + hookLength, transform.y);
           collide = LEFT;
         } else if (angle == 180) {
-          rayEnd.set(transform.x, transform.y + 120);
+          rayEnd.set(transform.x, transform.y + hookLength);
           collide = TOP;
         } else if (angle == 270) {
-          rayEnd.set(transform.x - 120, transform.y);
+          rayEnd.set(transform.x - hookLength, transform.y);
           collide = RIGHT;
         }
         clearHits();
-        physics.raycast(rayStart, rayEnd, hookTag, hits);
-        if (hits.length > 0) {
+        physics.raycast(rayStart, rayEnd, hooktHitTags, hits);
+        var noCollideHits = 0;
+        for (hit in hits) {
+          if (!hit.body.canCollide.contains(collide)) {
+            noCollideHits++;
+          }
+        }
+
+        if (hits.length > 0 && noCollideHits != hits.length) {
           for (hit in hits) {
             if (!hit.body.canCollide.contains(collide)) {
               continue;
             }
-            onHook = true;
-            body.useGravity = false;
-            hookStartPos.copyFrom(rayStart);
-            hookHitPos.copyFrom(hits[0].position);
-            if (angle == 0) {
-              body.velocity.set(0, -220);
-            } else if (angle == 90) {
-              body.velocity.set(220, 0);
-            } else if (angle == 180) {
-              body.velocity.set(0, 220);
-            } else if (angle == 270) {
-              body.velocity.set(-220, 0);
-            }
-          }
-        }
 
-        if (!onHook) {
-          hookTransform.scaleY = 120;
-          tweens.create(hookTransform, 0.1, { scaleY: 1 });
+            if (hit.body.tags.contains(hookTag)) {
+              onHook = true;
+              body.useGravity = false;
+              hookStartPos.copyFrom(rayStart);
+              hookHitPos.copyFrom(hit.position);
+              if (angle == 0) {
+                body.velocity.set(0, -220);
+              } else if (angle == 90) {
+                body.velocity.set(220, 0);
+              } else if (angle == 180) {
+                body.velocity.set(0, 220);
+              } else if (angle == 270) {
+                body.velocity.set(-220, 0);
+              }
+            } else {
+              final distance = Vector2.distance(rayStart, hit.position);
+              hookTransform.scaleY = distance;
+              moving = true;
+              tweens.create(hookTransform, 0.1, { scaleY: 1 }).setOnComplete(hookMisComplete);
+            }
+            break;
+          }
+        } else {
+          hookTransform.scaleY = hookLength;
+          moving = true;
+          tweens.create(hookTransform, 0.1, { scaleY: 1 }).setOnComplete(hookMisComplete);
         }
       }
     } else if (event.keyCode == LEFT) {
       leftDown = true;
       if (!moving) {
-        if (jumping && angle == 0) {
-          tweens.create(transform, 0.1, { angle: transform.angle - 90 }).setOnComplete(airRollComplete);
-        } else if (grounded && canMoveLeft()) {
+        if (grounded && canMoveLeft()) {
           rollLeft();
         }
       }
     } else if (event.keyCode == RIGHT && !moving) {
       rightDown = true;
       if (!moving) {
-        if (jumping && angle == 0) {
-          tweens.create(transform, 0.1, { angle: transform.angle + 90 }).setOnComplete(airRollComplete);
-        } else if (grounded && canMoveRight()) {
+         if (grounded && canMoveRight()) {
           rollRight();
         }
       }
     }
+  }
+
+  function hookMisComplete() {
+    moving = false;
+    transform.angle = beforeHookAngle;
   }
 
   function keyUp(event: KeyboardEvent) {
@@ -207,6 +240,10 @@ class PlayerMovement extends Component implements Updatable {
       leftDown = false;
     } else if (event.keyCode == RIGHT) {
       rightDown = false;
+    } else if (event.keyCode == UP) {
+      if (jumping && body.velocity.y < -60 ) {
+        body.velocity.y = -60;
+      }
     }
   }
 

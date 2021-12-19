@@ -185,6 +185,21 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">../sprites/goal.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>6,6,11,11</rect>
+                <key>scale9Paddings</key>
+                <rect>6,6,11,11</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">../sprites/obj_tiles/obj_tile_00.png</key>
             <key type="filename">../sprites/obj_tiles/obj_tile_01.png</key>
             <key type="filename">../sprites/obj_tiles/obj_tile_02.png</key>
@@ -222,6 +237,7 @@
             <filename>../sprites/obj_tiles/obj_tile_07.png</filename>
             <filename>../sprites/obj_tiles/obj_tile_08.png</filename>
             <filename>../sprites/obj_tiles/obj_tile_09.png</filename>
+            <filename>../sprites/goal.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

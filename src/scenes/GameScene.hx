@@ -1,10 +1,15 @@
 package scenes;
 
-import entities.Spike;
-import entities.Platform;
-import entities.Goal;
-import entities.Player;
-import entities.Hook;
+import entities.DoorE;
+import entities.DoorButtonE.ButtonE;
+import systems.DoorSystem;
+import components.CameraFollow;
+import spirit.events.SceneEvent;
+import entities.SpikeE;
+import entities.PlatformE;
+import entities.GoalE;
+import entities.PlayerE;
+import entities.HookE;
 import components.PlayerMovement;
 import spirit.graphics.Graphics;
 import spirit.math.Vector2;
@@ -46,28 +51,35 @@ abstract TileObject(Int) from Int to Int {
 
 class GameScene extends Scene {
 
-  var moving = false;
-
-  var movingRight = false;
-
   var physics: SimplePhysicsSystem;
 
   public override function init() {
     // Game.debugDraw = true;
     addSystem(UpdateSystem).init();
     addSystem(RenderSystem).init();
-    physics = addSystem(SimplePhysicsSystem).init({ worldWidth: 640, worldHeight: 360, gravity: { x: 0, y: 600 } });
+    physics = addSystem(SimplePhysicsSystem).init({ worldWidth: 640, worldHeight: 360, gravity: { x: 0, y: 550 } });
+    addSystem(DoorSystem).init();
 
     var cam = addEntity(Entity);
     cam.addComponent(Transform).init();
-    cam.addComponent(Camera).init();
+    cam.addComponent(Camera).init({ zoom: 1 });
 
-    var sheet = assets.addSpriteSheet('sprites', 'assets/spritesheets/sprites.png', 'assets/spritesheets/sprites.json');
+    loadLevel(cam);
 
-    var mapData = assets.getText('assets/tilemaps/testLevel.json');
+    physics.addInteractionListener(TRIGGER_START, 'dead', 'player', (a: Body, b: Body) -> {
+      events.emit(SceneEvent.get(SceneEvent.REPLACE, GameScene));
+    });
+  }
+
+  function loadLevel(cam: Entity) {
+    var mapData = assets.getText('assets/tilemaps/level01.json');
     var tilesetImage = assets.getImage('assets/tilemaps/tiles.png');
     var tileset = new Tileset(tilesetImage, 20, 20, 2, 1);
     var tiledMap = new TiledMap(tileset, mapData);
+    var tileSize = tileset.tileWidth;
+    var levelWidth = tiledMap.width * tileSize;
+    var levelHeight = tiledMap.height * tileSize;
+    physics.updateBounds(0, 0, levelWidth, levelHeight);
 
     var background = addEntity(Entity);
     background.addComponent(Transform).init();
@@ -79,7 +91,7 @@ class GameScene extends Scene {
     tilemap = collision.addComponent(Tilemap).init();
     tilemap.createFrom2dArray(tiledMap.tileLayers['floor'], tileset);
     var collider = collision.addComponent(SimpleTilemapCollider).init();
-    collider.setCollisions([1]);
+    collider.setCollisions([3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
     collider.addTag('ground');
 
     var hooks = addEntity(Entity);
@@ -90,7 +102,6 @@ class GameScene extends Scene {
     collider.setCollisions([2]);
     collider.addTag('hook');
 
-    var tileSize = tileset.tileWidth;
     var objectGrid = tiledMap.tileLayers['objects'];
     var firstGid = tiledMap.tilesetFirstGid['object_tiles'];
     for (y in 0...objectGrid.length - 1) {
@@ -104,17 +115,37 @@ class GameScene extends Scene {
         var yPos = y * tileSize + tileSize * 0.5;
         switch(index) {
           case PLAYER:
-            var hook = addEntity(Hook).init();
-            addEntity(Player).init({ x: xPos, y: yPos, sheet: sheet, physics: physics, hookTransform: hook.transform });
+            var hook = addEntity(HookE).init();
+            var player = addEntity(PlayerE).init({ x: xPos, y: yPos, physics: physics, hookTransform: hook.transform });
+            cam.addComponent(CameraFollow).init({ target: player.transform, speed: 2, minX: 0, minY: 0,
+                maxX: levelWidth, maxY: levelHeight });
 
           case GOAL:
-            addEntity(Goal).init({ x: xPos, y: yPos, sheet: sheet });
+            addEntity(GoalE).init({ x: xPos, y: yPos });
 
           case PLATFORM:
-            addEntity(Platform).init({ x: xPos, y: yPos, sheet: sheet });
+            addEntity(PlatformE).init({ x: xPos, y: yPos });
 
           case SPIKES:
-            addEntity(Spike).init({ x: xPos, y: yPos, sheet: sheet });
+            addEntity(SpikeE).init({ x: xPos, y: yPos });
+            
+          case RED_BUTTON:
+            addEntity(ButtonE).init({ x: xPos, y: yPos, color: RED });
+            
+          case RED_WALL:
+            addEntity(DoorE).init({ x: xPos, y: yPos, color: RED });
+
+          case GREEN_BUTTON:
+            addEntity(ButtonE).init({ x: xPos, y: yPos, color: GREEN });
+
+          case GREEN_WALL:
+            addEntity(DoorE).init({ x: xPos, y: yPos, color: GREEN });
+            
+          case BLUE_BUTTON:
+            addEntity(ButtonE).init({ x: xPos, y: yPos, color: BLUE });
+
+          case BLUE_WALL:
+            addEntity(DoorE).init({ x: xPos, y: yPos, color: BLUE });
 
           default:
         }

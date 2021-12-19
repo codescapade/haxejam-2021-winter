@@ -13,7 +13,7 @@ class SpikeE extends Entity {
     addComponent(Transform).init({ x: options.x, y: options.y, zIndex: 1});
     addComponent(Sprite).init({ sheet: sheet, frameName: 'obj_tile_03' });
     addComponent(SimpleBody).init({ width: 20, height: 6, offset: { x: 0, y: 7 }, type: STATIC,
-        isTrigger: true, tags: ['dead'] });
+        isTrigger: true, tags: ['death'] });
 
     return this;
   }

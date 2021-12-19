@@ -48,8 +48,6 @@ class PlayerMovement extends Component implements Updatable {
 
   var onHook = false;
 
-  var complete = false;
-
   var hookStartPos = new Vector2();
   var hookHitPos = new Vector2();
 
@@ -111,12 +109,8 @@ class PlayerMovement extends Component implements Updatable {
     }
   }
 
-
   function keyDown(event: KeyboardEvent) {
-    if (onHook || complete) {
-      if (complete && event.keyCode == RETURN) {
-        events.emit(SceneEvent.get(SceneEvent.REPLACE, GameScene));
-      }
+    if (onHook || GameManager.instance.levelComplete) {
       return;
     }
 
@@ -273,8 +267,8 @@ class PlayerMovement extends Component implements Updatable {
   function rollLeftComplete() {
     transform.x -= sprite.width * 0.5;
     rollComplete();
-    if (leftDown) {
-    updateGrounded();
+    if (leftDown && !GameManager.instance.levelComplete) {
+      updateGrounded();
       if (grounded && canMoveLeft()) {
         rollLeft();
       }
@@ -284,7 +278,7 @@ class PlayerMovement extends Component implements Updatable {
   function rollRightComplete() {
     transform.x += sprite.width * 0.5;
     rollComplete();
-    if (rightDown) {
+    if (rightDown && !GameManager.instance.levelComplete) {
       updateGrounded();
       if (grounded && canMoveRight()) {
         rollRight();
@@ -388,9 +382,7 @@ class PlayerMovement extends Component implements Updatable {
   }
 
   function hitGoal(a: Body, b: Body) {
-    if (!moving) {
-      complete = true;
-    }
+    GameManager.instance.levelComplete = true;
   }
 
   override function get_requiredComponents():Array<Class<Component>> {

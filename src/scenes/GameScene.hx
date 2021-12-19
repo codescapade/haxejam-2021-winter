@@ -1,5 +1,6 @@
 package scenes;
 
+import spirit.components.Text;
 import entities.DoorE;
 import entities.DoorButtonE.ButtonE;
 import systems.DoorSystem;
@@ -53,33 +54,68 @@ class GameScene extends Scene {
 
   var physics: SimplePhysicsSystem;
 
+  var levelCompleteE: Entity;
+
   public override function init() {
     // Game.debugDraw = true;
+    GameManager.instance.levelComplete = false;
     addSystem(UpdateSystem).init();
     addSystem(RenderSystem).init();
     physics = addSystem(SimplePhysicsSystem).init({ worldWidth: 640, worldHeight: 360, gravity: { x: 0, y: 550 } });
     addSystem(DoorSystem).init();
 
     var cam = addEntity(Entity);
-    cam.addComponent(Transform).init();
+    var camTransform = cam.addComponent(Transform).init();
     cam.addComponent(Camera).init({ zoom: 1 });
 
     loadLevel(cam);
 
-    physics.addInteractionListener(TRIGGER_START, 'dead', 'player', (a: Body, b: Body) -> {
+    var font = assets.getBitmapFont('16px');
+    levelCompleteE = addEntity(Entity);
+    levelCompleteE.addComponent(Transform).init({ x: display.viewCenterX, y: display.viewCenterY, zIndex: 8, parent: camTransform });
+    levelCompleteE.addComponent(Text).init({ font: font, text: 'Level Complete. Press space to continue' });
+    levelCompleteE.active = false;
+
+    physics.addInteractionListener(TRIGGER_START, 'death', 'player', (a: Body, b: Body) -> {
       events.emit(SceneEvent.get(SceneEvent.REPLACE, GameScene));
     });
+
+    events.on(KeyboardEvent.KEY_DOWN, keyDown);
+  }
+
+  public override function update(dt:Float) {
+    super.update(dt);
+    if (!levelCompleteE.active && GameManager.instance.levelComplete) {
+      levelCompleteE.active = true;
+    }
+  }
+
+  function keyDown(event: KeyboardEvent) {
+    if (event.keyCode == ESCAPE) {
+      events.emit(SceneEvent.get(SceneEvent.REPLACE, MenuScene));
+    } else if (event.keyCode == SPACE && GameManager.instance.levelComplete) {
+      if (GameManager.instance.nextLevel()) {
+        events.emit(SceneEvent.get(SceneEvent.REPLACE, GameScene));
+      } else {
+        events.emit(SceneEvent.get(SceneEvent.REPLACE, EndScene));
+      }
+    }
   }
 
   function loadLevel(cam: Entity) {
-    var mapData = assets.getText('assets/tilemaps/level01.json');
+    var mapData = assets.getText('assets/tilemaps/level${GameManager.instance.level}.json');
     var tilesetImage = assets.getImage('assets/tilemaps/tiles.png');
     var tileset = new Tileset(tilesetImage, 20, 20, 2, 1);
     var tiledMap = new TiledMap(tileset, mapData);
     var tileSize = tileset.tileWidth;
     var levelWidth = tiledMap.width * tileSize;
     var levelHeight = tiledMap.height * tileSize;
-    physics.updateBounds(0, 0, levelWidth, levelHeight);
+    physics.updateBounds(0, 0, levelWidth, levelHeight + 20);
+
+    var deathBar = addEntity(Entity);
+    deathBar.addComponent(Transform).init({ x: levelWidth * 0.5, y: levelHeight + 10 });
+    deathBar.addComponent(SimpleBody).init({ width: levelWidth * 0.5, height: 20, type: STATIC, isTrigger: true,
+        tags: ['death']});
 
     var background = addEntity(Entity);
     background.addComponent(Transform).init();

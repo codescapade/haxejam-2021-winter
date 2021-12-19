@@ -10,7 +10,7 @@ class GoalE extends Entity {
   public function init(options: GoalEOptions): GoalE {
     var sheet = assets.getSpriteSheet('sprites');
     addComponent(Transform).init({ x: options.x, y: options.y, zIndex: 1 });
-    addComponent(Sprite).init({ sheet: sheet, frameName: 'obj_tile_01' });
+    addComponent(Sprite).init({ sheet: sheet, frameName: 'goal' });
     addComponent(SimpleBody).init({ width: 10, height: 10, type: STATIC, isTrigger: true, tags: ['goal'] });
 
     return this;

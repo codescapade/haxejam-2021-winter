@@ -210,6 +210,7 @@
             <key type="filename">../sprites/obj_tiles/obj_tile_07.png</key>
             <key type="filename">../sprites/obj_tiles/obj_tile_08.png</key>
             <key type="filename">../sprites/obj_tiles/obj_tile_09.png</key>
+            <key type="filename">../sprites/tiles/tile_05.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -254,6 +255,7 @@
             <filename>../sprites/obj_tiles/obj_tile_09.png</filename>
             <filename>../sprites/goal.png</filename>
             <filename>../sprites/title.png</filename>
+            <filename>../sprites/tiles/tile_05.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
